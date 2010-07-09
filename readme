@@ -1,2 +1,8 @@
 This is GUI for dictionary tryout written in wxpython.
 Database is still to be settled.
+
+Requirement wxpython
+
+Its the clone for  http://collaborate.d2labs.org/projects/shabdartha/
+
+tested in Ubuntu and Fedora
