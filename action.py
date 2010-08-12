@@ -19,7 +19,7 @@
 #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
 #       MA 02110-1301, USA.
 import re
-#from data import mydb
+from data import mydb
 from myFrame import *
 from keyboard import *
 
@@ -63,9 +63,9 @@ class Words():
 			self.alert.Bind(wx.EVT_ENTER_WINDOW,self.OnEnter)
 		else:
 			result=mydb.select(u)
-			if u==result["words"]:
-				wx.StaticBox(wPanel,label=result['words'],pos=(10,5),size=(325,225))
-			elif u!=result["words"]:
+			if u==result.words:
+				wx.StaticBox(wPanel,label=result.words,pos=(10,5),size=(325,225))
+			else:
 				style=wx.FRAME_TOOL_WINDOW
 				mysize=(110,20)
 				self.alert=MyFrame(parent=self.MainPanel,title="सावधान",size=mysize,style=style)
