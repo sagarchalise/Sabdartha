@@ -49,6 +49,7 @@ class Words():
 		self.MainPanel.Hide()		
 		font=decor.getFonts(size=12.5,weight=wx.FONTWEIGHT_NORMAL)
 		wPanel=wx.Panel(parent=self.parent,pos=(3,95),size=(443,230))
+		vbox1=wx.BoxSizer(wx.VERTICAL)
 		wPanel.SetFont(font)
 		wPanel.SetBackgroundColour('white')
 		value=self.entry.GetValue()
@@ -63,9 +64,39 @@ class Words():
 			self.alert.Bind(wx.EVT_ENTER_WINDOW,self.OnEnter)
 		else:
 			result=mydb.select(u)
-			if u==result.words:
-				wx.StaticBox(wPanel,label=result.words,pos=(10,5),size=(325,225))
-			else:
+			if u==result.Words:
+				scroll=wx.Panel(wPanel)
+				word=wx.StaticBox(scroll,label=result.Words)
+				stboxsizer=wx.StaticBoxSizer(word,orient=wx.VERTICAL)
+				vbox=wx.BoxSizer(wx.VERTICAL|wx.SHAPED)
+				grid=wx.GridSizer(5,1,10,5)
+				grid.Add(wx.StaticText(scroll,label= 'पदवर्ग: '),wx.ALIGN_CENTER)
+				grid.Add(wx.StaticText(scroll,label=result.Speech))
+				grid.Add(wx.StaticText(scroll,label='अर्थ: '),wx.ALIGN_CENTER)
+				grid.Add(wx.StaticText(scroll,label=result.Meaning))
+				if result.Synonym == None:
+					grid.Add(wx.StaticText(scroll,label='विपरितार्थक: '),wx.ALIGN_CENTER)
+					grid.Add(wx.StaticText(scroll,label=result.Antonym))
+					grid.Add(wx.StaticText(scroll,label='अङ्ग्रेजी: '),wx.ALIGN_CENTER)
+					grid.Add(wx.StaticText(scroll,label=result.English))				
+				elif result.Antonym == None:
+					grid.Add(wx.StaticText(scroll,label= 'पर्यायवाचक: '),wx.ALIGN_CENTER)
+					grid.Add(wx.StaticText(scroll,label=result.Synonym))
+					grid.Add(wx.StaticText(scroll,label='अङ्ग्रेजी: '),wx.ALIGN_CENTER)
+					grid.Add(wx.StaticText(scroll,label=result.English))
+				else:
+					grid.Add(wx.StaticText(scroll,label='विपरितार्थक :'),wx.ALIGN_CENTER)
+					grid.Add(wx.StaticText(scroll,label=result.Synonym))
+					grid.Add(wx.StaticText(scroll,label='पर्यायवाचक :'),wx.ALIGN_CENTER)
+					grid.Add(wx.StaticText(scroll,label=result.Antonym))
+					grid.Add(wx.StaticText(scroll,label='अङ्ग्रेजी: ' ),wx.ALIGN_CENTER)
+					grid.Add(wx.StaticText(scroll,label=result.English))
+				vbox.Add(grid)
+				stboxsizer.Add(vbox,wx.SHAPED)
+				scroll.SetSizer(stboxsizer)
+				vbox1.Add(scroll,wx.SHAPED)
+				wPanel.SetSizer(vbox1,wx.EXPAND)
+			elif u!=result.Words:
 				style=wx.FRAME_TOOL_WINDOW
 				mysize=(110,20)
 				self.alert=MyFrame(parent=self.MainPanel,title="सावधान",size=mysize,style=style)

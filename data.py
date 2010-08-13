@@ -10,11 +10,14 @@ class DataBase():
         self.db.open()
             	
     def select(self,value):
-        record =self.db.select(['words','meaning'],words=value)
+        record =self.db.select(['Words','Speech','Meaning','Synonym','Antonym','English'],Words=value)
         for v in record:
             return v
-     
+        self.db.close()
     def fields(self):
         print self.db.field_names                   		
 mydb=DataBase()
+
+if __name__=='__main__':
+	print "Hello, Not Allowed."
 
