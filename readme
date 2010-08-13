@@ -1,8 +1,14 @@
 This is GUI for dictionary tryout written in wxpython.
-Database is still to be settled.
+Tested with buzhug with 3 words गरिब, सुर्य, आँखा
 
-Requirement wxpython
+Requirement wxpython,buzhug
+In ubuntu 
+sudo apt-get install wxversion python-buzhug
+
+Run main.py
 
 Its the clone for  http://collaborate.d2labs.org/projects/shabdartha/
 
 tested in Ubuntu and Fedora
+
+Those who can contribute to this project especially in database building sector are welcome.
