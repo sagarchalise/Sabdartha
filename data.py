@@ -27,12 +27,12 @@ class DataBase():
         for v in self.record:
             self.g = self._get_attribute(v)
             return self.g             
-        self.db.close()             
     
     def fields(self):
-        print self.db.field_names                   		
+        return self.db.field_names                   		
 	
-    def get_field_length(self):
+    def get_field_length(self, value):
+        t = self.select(value)
         return len(self.g)
 
 mydb=DataBase()

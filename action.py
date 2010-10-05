@@ -20,6 +20,7 @@
 #       MA 02110-1301, USA.
 import re
 from data import mydb
+from wx.grid import Grid
 from myFrame import *
 from keyboard import *
 
@@ -49,12 +50,11 @@ class Words():
 		self.MainPanel.Hide()		
 		font=decor.getFonts(size=12.5,weight=wx.FONTWEIGHT_NORMAL)
 		wPanel=wx.Panel(parent=self.parent,pos=(3,95),size=(443,230))
-		vbox1=wx.BoxSizer(wx.VERTICAL)
 		wPanel.SetFont(font)
 		wPanel.SetBackgroundColour('white')
 		value=self.entry.GetValue()
 		u=value.encode("utf-8")
-		if value=="":
+		if value == "" or value == None:
 			self.search.Disable()			
 			style=wx.FRAME_TOOL_WINDOW
 			mysize=(110,20)
@@ -63,42 +63,45 @@ class Words():
 			self.alert.Show()
 			self.alert.Bind(wx.EVT_ENTER_WINDOW,self.OnEnter)
 		else:
-			result=mydb.select(u)
-			if u==result.Words:
-				scroll=wx.Panel(wPanel)
-				word=wx.StaticBox(scroll,label=result.Words)
-				stboxsizer=wx.StaticBoxSizer(word,orient=wx.VERTICAL)
-				vbox=wx.BoxSizer(wx.VERTICAL|wx.SHAPED)
-				grid=wx.GridSizer(5,1,10,5)
-				grid.Add(wx.StaticText(scroll,label= 'पदवर्ग: '),wx.ALIGN_CENTER)
-				grid.Add(wx.StaticText(scroll,label=result.Speech))
-				grid.Add(wx.StaticText(scroll,label='अर्थ: '),wx.ALIGN_CENTER)
-				grid.Add(wx.StaticText(scroll,label=result.Meaning))
-				if result.Synonym == None:
-					grid.Add(wx.StaticText(scroll,label='विपरितार्थक: '),wx.ALIGN_CENTER)
-					grid.Add(wx.StaticText(scroll,label=result.Antonym))
-					grid.Add(wx.StaticText(scroll,label='अङ्ग्रेजी: '),wx.ALIGN_CENTER)
-					grid.Add(wx.StaticText(scroll,label=result.English))				
-				elif result.Antonym == None:
-					grid.Add(wx.StaticText(scroll,label= 'पर्यायवाचक: '),wx.ALIGN_CENTER)
-					grid.Add(wx.StaticText(scroll,label=result.Synonym))
-					grid.Add(wx.StaticText(scroll,label='अङ्ग्रेजी: '),wx.ALIGN_CENTER)
-					grid.Add(wx.StaticText(scroll,label=result.English))
+			try:
+				result = mydb.select(u)
+				if u == result['शब्द']:
+					fl = mydb.get_field_length(u)
+					word = wx.StaticBox(wPanel,label=u)
+					result.pop('शब्द')
+					stboxsizer=wx.StaticBoxSizer(word,orient=wx.VERTICAL)
+					word_grid = Grid(wPanel)
+					word_grid.SetSize((430, 220))
+					word_grid.CreateGrid(fl-1, 2)
+					word_grid.SetRowLabelSize(0)
+					word_grid.SetCellHighlightPenWidth(0)
+					word_grid.EnableEditing(False)
+					word_grid.SetColLabelSize(0)
+					vbox = wx.BoxSizer(wx.VERTICAL|wx.SHAPED)
+					i = 0
+					for k, v in result.items():
+						word_grid.SetCellRenderer(i, 0, wx.grid.GridCellAutoWrapStringRenderer())
+						word_grid.SetCellValue(i, 0, k)
+						word_grid.AutoSizeColumn(0)
+						# wraps text inside a cell
+						word_grid.SetCellRenderer(i, 1, wx.grid.GridCellAutoWrapStringRenderer())
+						word_grid.SetCellValue(i, 1, v)
+						word_grid.AutoSizeColumn(1)
+						word_grid.AutoSizeRows(i)
+						i += 1
+					vbox.Add(word_grid, wx.EXPAND)
+					stboxsizer.Add(vbox,wx.SHAPED)
+					wPanel.SetSizer(stboxsizer,wx.EXPAND)
 				else:
-					grid.Add(wx.StaticText(scroll,label='विपरितार्थक :'),wx.ALIGN_CENTER)
-					grid.Add(wx.StaticText(scroll,label=result.Synonym))
-					grid.Add(wx.StaticText(scroll,label='पर्यायवाचक :'),wx.ALIGN_CENTER)
-					grid.Add(wx.StaticText(scroll,label=result.Antonym))
-					grid.Add(wx.StaticText(scroll,label='अङ्ग्रेजी: ' ),wx.ALIGN_CENTER)
-					grid.Add(wx.StaticText(scroll,label=result.English))
-				vbox.Add(grid)
-				stboxsizer.Add(vbox,wx.SHAPED)
-				scroll.SetSizer(stboxsizer)
-				vbox1.Add(scroll,wx.SHAPED)
-				wPanel.SetSizer(vbox1,wx.EXPAND)
-			elif u!=result.Words:
+					style=wx.FRAME_TOOL_WINDOW
+					mysize=(150,30)
+					self.alert=MyFrame(parent=self.MainPanel,title="सावधान",size=mysize,style=style)
+					notice=wx.StaticText(parent=self.alert,id=-1,label='माफ गर्नुहोस, खोजिएको शब्द यहाँ छैन ।',pos=(0,25))
+					self.alert.Show()
+					self.alert.Bind(wx.EVT_ENTER_WINDOW,self.OnEnter)
+			except:
 				style=wx.FRAME_TOOL_WINDOW
-				mysize=(110,20)
+				mysize=(200,30)
 				self.alert=MyFrame(parent=self.MainPanel,title="सावधान",size=mysize,style=style)
 				notice=wx.StaticText(parent=self.alert,id=-1,label='माफ गर्नुहोस, खोजिएको शब्द यहाँ छैन ।',pos=(0,25))
 				self.alert.Show()
