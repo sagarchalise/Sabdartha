@@ -3,7 +3,7 @@ Tested with buzhug with 3 words गरिब, सुर्य, आँखा
 
 Requirement wxpython,buzhug
 In ubuntu 
-sudo apt-get install wxversion python-buzhug
+sudo apt-get install python-wxversion python-buzhug
 
 Run main.py
 
